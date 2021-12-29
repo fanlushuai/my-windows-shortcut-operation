@@ -51,6 +51,7 @@ md预览，关闭tab，tab切换。
    1. 安装[strokens Plus](https://www.strokesplus.com/downloads/)
    2. 启动strokens Plus导入本项目的strokens plus配置文件。xxx.spexport
 
-## 修改参考
-1. ahk语法
-2. vim键位设计，emacs键位设计。单手键位考虑
+## 参考
+1. vim键位设计，emacs键位设计，单手操作键位设计理念。
+2. 虚拟桌面部分控制参考，https://github.com/pmb6tz/windows-desktop-switcher
+3. VirtualDesktopAccessor.DDL 部分可能随着windows的更新失效，建议参考 https://github.com/skottmckay/VirtualDesktopAccessor/tree/master/x64/Release
