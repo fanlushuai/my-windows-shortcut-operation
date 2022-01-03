@@ -81,7 +81,8 @@ capslock & w::OnTogglePinWindowPress()
 ^#e::Volume_Up
 
 ; wt.exe
-^#r::callSoft("ahk_exe WindowsTerminal.exe","wt.exe")
+; "wt.exe --tabColor #2EC462 `; sp -H -p `"CMD`"" 这种转义符的方式不可用，不知道为何。使用空格拼接字符串的方式才行。https://segmentfault.com/a/1190000005069285
+^#r::callSoft("ahk_exe WindowsTerminal.exe","wt.exe --tabColor #2EC462 `; sp -H -p " "CMD" "; mf up")
 
 ; ================  ctrl alt 系列
 
