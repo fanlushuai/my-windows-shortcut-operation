@@ -82,7 +82,8 @@ capslock & w::OnTogglePinWindowPress()
 
 ; wt.exe
 ; "wt.exe --tabColor #2EC462 `; sp -H -p `"CMD`"" 这种转义符的方式不可用，不知道为何。使用空格拼接字符串的方式才行。https://segmentfault.com/a/1190000005069285
-^#r::callSoft("ahk_exe WindowsTerminal.exe","wt.exe --tabColor #2EC462 `; sp -H -p " "PowerShell" "; mf up")
+; 遇到了一个奇葩问题。新安装的nvm，无法在这种方式的cmd中打开。貌似不归属一个进程。环境变量好像是不能传递。可能需要重启电脑。或者还是使用最原始的，win+r，cmd方式。
+^#r::callSoft("ahk_exe WindowsTerminal.exe","wt --tabColor #2EC462 `; sp -H -p " "PowerShell" "; mf up")
 
 ; ================  ctrl alt 系列
 
