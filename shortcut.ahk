@@ -1,7 +1,8 @@
 ;=====================CapsLock 系列.主要用于操作桌面和窗口.CapsLock具备得天独厚的单手操作=============
 
 ; CapsLock 重新映射，防止误触发，导致输入法的切换，直接禁用。并增加难度触发实际输入法大小切换。
-CapsLock::Return
+; https://www.autohotkey.com/board/topic/51215-completely-disable-capslock/
+SetCapsLockState , alwaysoff
 
 ; 切换桌面  && 切换当前窗口到另外一个虚拟桌面
 ; 编写在一起原因，无法3个组合按键，只能采用检测状态的方式
