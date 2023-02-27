@@ -7,5 +7,6 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 #Include %A_ScriptDir%\common.ahk
 #Include %A_ScriptDir%\desktop.ahk
 #Include %A_ScriptDir%\shortcut.ahk
+#Include %A_ScriptDir%\vimNormalInput.ahk
 
 return
