@@ -72,8 +72,8 @@ capslock & w::OnTogglePinWindowPress()
 
 ; ================  ctrl win 系列
 ; Vim-like key config . If use this, suggest config DesktopMiniCount=4, DesktopInitSwitchTarget as well
-^#j::switchDesktopByNumber(1)
-^#k::switchDesktopByNumber(2)
+^#j::switchDesktopByNumber(1)  ;上 桌面
+^#k::switchDesktopByNumber(2)  ;下 桌面
 ^#l::switchDesktopByNumber(3)
 ^#i::switchDesktopByNumber(4)
 
