@@ -72,26 +72,32 @@ md预览，关闭tab，tab切换。
    2. 启动strokens Plus导入本项目的strokens plus配置文件。xxx.spexport
 
 ## 使用
-参考strokens plus配置文件的手势配置。
 
-参考ahk文件中的，快捷键部分。
+### 手势使用
+参考strokens plus手势配置。将[fullStrokesPlusConfig.spexport](fullStrokesPlusConfig.spexport) 文件导入，strokens plus。在strokens plus面板中查看手势的配置。
 
-熟悉上面提到的功能即可。
+### 快捷键使用
+参考[shortcut.ahk](shortcut.ahk)部分。
 
-因为，手势是可以和快捷键配合的。所以，strokens plus 和 ahk 的配合，天衣无缝，强强联合。
-
-秉承着，快捷键能做的，手势也能做，相反同样的理念。同时降低复杂度，抽取了最重要，最高频的操作。来加速整体操作效率，增强体验。带来刺激，流畅，爽的感脚~~~
+手势是可以和快捷键配合的。所以，strokens plus 和 ahk 的配合，能够充分的给你的创造力以空间。
 
 既能单打，又能群殴。灰常nice,谁用谁知道~~~~
 
-## 感恩遇见这些伟大的作品 & 思想
-- ahk **全局**按键配置
-- strokesplus.net  **全局**手势配置
-- quicker **全局**导航配置
+## 感恩遇见纯粹而强大的软件
+- ahk **全局**按键
+- strokesplus.net  **全局**手势
+
+另外推荐
+- quicker **全局**导航
 - listary **全局**搜索
-- utools 强大的xxxxx（不是很强大，哈哈）
+- utools 这个目前，只是用了用翻译的调用，和全局谷歌搜索调用。太乱了。
 
 ## 参考
-1. vim键位设计，emacs键位设计，单手操作键位设计理念。
-2. 虚拟桌面部分控制参考，https://github.com/pmb6tz/windows-desktop-switcher
-3. VirtualDesktopAccessor.DDL 部分可能随着windows的更新失效，建议参考 https://github.com/skottmckay/VirtualDesktopAccessor/tree/master/x64/Release
+1. 键位设计理念。vim，emacs，单手操作理念
+2. 虚拟桌面部分控制参考
+   - https://github.com/pmb6tz/windows-desktop-switcher
+3. [VirtualDesktopAccessor.ddl文件](VirtualDesktopAccessor.ddl) 部分可能随着windows的更新失效，建议参考进行升级 
+
+   - https://github.com/skottmckay/VirtualDesktopAccessor/tree/master/x64/Release
+
+   - https://github.com/Ciantic/VirtualDesktopAccessor/releases
