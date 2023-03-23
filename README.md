@@ -106,6 +106,8 @@
    - https://github.com/skottmckay/VirtualDesktopAccessor/tree/master/x64/Release
 
    - https://github.com/Ciantic/VirtualDesktopAccessor/releases
+4. 切换桌面背景，用于区分不同的虚拟桌面。win11原生已经支持，可以参考 
+   - https://zhuanlan.zhihu.com/p/543942561
 
 ## 背景 & 构想
 

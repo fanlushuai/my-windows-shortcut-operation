@@ -14,7 +14,7 @@ DesktopMiniCount := 2   ; keep desktop mini count at script boot.
 DesktopBeforeScriptBoot := -1 ; this param will keep desktop location before script run. desktop mini count will create new desktop while switch to new desktop.
 
 ; desktop associate with background picture
-AutoAssociateBackgroundWithDesktop := true
+AutoAssociateBackgroundWithDesktop := false
 BackgroundPicPaths := [".\bgPic\1.jpg", ".\bgPic\2.jpg"]
 
 
