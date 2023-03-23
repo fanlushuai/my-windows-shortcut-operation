@@ -85,6 +85,7 @@ capslock & w::OnTogglePinWindowPress()
 ; "wt.exe --tabColor #2EC462 `; sp -H -p `"CMD`"" 这种转义符的方式不可用，不知道为何。使用空格拼接字符串的方式才行。https://segmentfault.com/a/1190000005069285
 ; 遇到了一个奇葩问题。新安装的nvm，无法在这种方式的cmd中打开。貌似不归属一个进程。环境变量好像是不能传递。可能需要重启电脑。或者还是使用最原始的，win+r，cmd方式。
 ^#r::callSoft("ahk_exe WindowsTerminal.exe","WindowsTerminal.exe","wt --tabColor #2EC462 `; sp -H -p " "PowerShell" "; mf up")
+capslock & u::callSoft("ahk_exe WindowsTerminal.exe","WindowsTerminal.exe","wt --tabColor #2EC462")
 
 ; ================  ctrl alt 系列
 
@@ -95,9 +96,9 @@ capslock & w::OnTogglePinWindowPress()
 ^!w::callSoft("ahk_class WeChatMainWndForPC","WeChat.exe","C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
 ^!e::callSoft("ahk_exe Code.exe","Code.exe","D:\Microsoft VS Code\Code.exe")
 ^!r::callSoft("ahk_exe Notion.exe","Notion.exe","C:\Users\A\AppData\Local\Programs\Notion\Notion.exe")
-^!f::keyfunc_listary()
+^!f::callSoft("ahk_exe Fluent Reader.exe","Fluent Reader.exe","D:\Fluent Reader\Fluent Reader.exe")
+;^!f::keyfunc_listary()
 ^!v::callSoft("ahk_exe cloudmusic.exe","cloudmusic.exe","D:\ksoft\Netease\CloudMusic\cloudmusic.exe")
-
 
 ; ================== ctrl+ num 系列
 ^1::

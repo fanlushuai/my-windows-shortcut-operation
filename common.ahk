@@ -1,4 +1,5 @@
 ; start or active or minimize 处理常见软件的，启动，激活窗口，和最小化。
+; 在使用过程中，会存在迷惑行为。未搞清楚原因。目前某种情况会有bug
 callSoft(winUnique,proc,executablePath){
 	If WinExist(winUnique) 
     {
