@@ -53,8 +53,6 @@ if GetKeyState("Alt", "F"){
 }
 return
 
-
-
 ; 切换当前窗口到另外一个显示器
 CapsLock & v:: +#Left 
 
