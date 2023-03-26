@@ -1,19 +1,24 @@
 ; start or active or minimize 处理常见软件的，启动，激活窗口，和最小化。
 ; 在使用过程中，会存在迷惑行为。未搞清楚原因。目前某种情况会有bug
+DetectHiddenWindows, on
+
 callSoft(winUnique,proc,executablePath){
-	If WinExist(winUnique) 
+    If WinExist(winUnique)
     {
-        if WinActive(winUnique)
-            WinMinimize ; Use the window found by WinExist. 注意！！！必须在前面使用一次winexist
-        else
+        if WinActive(winUnique){
+            WinActivate ; make sure active ,sometimes active but window not show so that minisize not work
+            WinMinimize ; Use the window found by WinExist.
+        }else{
             WinActivate ; Use the window found by WinExist.
+            WinWaitActive
+        }
         return
     }
-    
+
     if !ProcessExist(proc){
         Run %executablePath% ;
     }else{
-        Run %executablePath% ;     ; win not exist 的情况不知道怎么回事。程序已经运行了。只是窗口没有。只能先通过这种方式，调出主窗口了。但是这存在一个问题，可能会调出来两次。
+        Run %executablePath% ; win not exist 的情况不知道怎么回事。程序已经运行了。只是窗口没有。只能先通过这种方式，调出主窗口了。但是这存在一个问题，可能会调出来两次。
     }
 }
 
@@ -27,7 +32,7 @@ keyfunc_listary(){
 
     ; {Text} will ignore IME 忽略输入法问题
     Send, {Text}gg
-	Send, {Space}
+    Send, {Space}
 }
 
 SwitchIME(dwLayout){
@@ -37,6 +42,6 @@ SwitchIME(dwLayout){
 }
 
 ProcessExist(Name){
-	Process,Exist,%Name%
-	return Errorlevel
+    Process,Exist,%Name%
+    return Errorlevel
 }
