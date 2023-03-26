@@ -59,8 +59,8 @@ CapsLock & v:: +#Left
 ; 锁定应用，或者锁定窗口
 ; pin app on top, app ,window
 capslock & t::OnTogglePinOnTopPress()
-capslock & a::OnTogglePinAppPress()
-capslock & w::OnTogglePinWindowPress()
+; capslock & a::OnTogglePinAppPress()
+; capslock & w::OnTogglePinWindowPress()
 
 ; 增加一组快捷键，绕过capslock。使得strokesPlus手势来发送按键，进而支持动作
 !#j::MoveCurrentWindowToDesktop(1)
@@ -84,6 +84,7 @@ capslock & w::OnTogglePinWindowPress()
 ; 遇到了一个奇葩问题。新安装的nvm，无法在这种方式的cmd中打开。貌似不归属一个进程。环境变量好像是不能传递。可能需要重启电脑。或者还是使用最原始的，win+r，cmd方式。
 ^#r::callSoft("ahk_exe WindowsTerminal.exe","WindowsTerminal.exe","wt --tabColor #2EC462 `; sp -H -p " "PowerShell" "; mf up")
 capslock & u::callSoft("ahk_exe WindowsTerminal.exe","WindowsTerminal.exe","wt --tabColor #2EC462")
+capslock & s::callSoft("ahk_exe sublime_text.exe","sublime_text.exe","D:\sublime3-portable-auh\sublime_text.exe")
 
 ; ================  ctrl alt 系列
 
@@ -92,6 +93,7 @@ capslock & u::callSoft("ahk_exe WindowsTerminal.exe","WindowsTerminal.exe","wt -
 ; Attention: Before using , please replace user path exe for run correctlly！！！！！
 
 ^!w::callSoft("ahk_class WeChatMainWndForPC","WeChat.exe","C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
+;^!q::callSoft("ahk_class Chrome_WidgetWin_1","uTools.exe","C:\Users\A\AppData\Local\Programs\utools\uTools.exe")
 ^!e::callSoft("ahk_exe Code.exe","Code.exe","D:\Microsoft VS Code\Code.exe")
 ^!r::callSoft("ahk_exe Notion.exe","Notion.exe","C:\Users\A\AppData\Local\Programs\Notion\Notion.exe")
 ^!f::callSoft("ahk_exe Fluent Reader.exe","Fluent Reader.exe","D:\Fluent Reader\Fluent Reader.exe")
