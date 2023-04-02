@@ -2,4 +2,4 @@
 ~Esc::
     Send, ^{F8}
     Send, {Shift}
-#If
+Return
