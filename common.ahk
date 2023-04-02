@@ -1,17 +1,21 @@
 ; start or active or minimize 处理常见软件的，启动，激活窗口，和最小化。
 ; 在使用过程中，会存在迷惑行为。未搞清楚原因。目前某种情况会有bug
-DetectHiddenWindows, on
 
+SetKeyDelay, 0
+SetWinDelay, 200
+
+; https://www.autohotkey.com/boards/viewtopic.php?t=59082#:~:text=What%20if%20you-,use%20the%20Click%20command,-to%20activate%20the
 callSoft(winUnique,proc,executablePath){
     If WinExist(winUnique)
     {
         if WinActive(winUnique){
-            WinActivate ; make sure active ,sometimes active but window not show so that minisize not work
-            WinMinimize ; Use the window found by WinExist.
+            ; WinMinimize ; Use the window found by WinExist. sometimes occur a bug windows active but also min
+            SendInput, !{Esc} ; open last active . but if last is not exist???? haha ,maybe wont occur
         }else{
             WinActivate ; Use the window found by WinExist.
-            WinWaitActive
         }
+
+        ; Click ;
         return
     }
 
@@ -45,3 +49,4 @@ ProcessExist(Name){
     Process,Exist,%Name%
     return Errorlevel
 }
+
