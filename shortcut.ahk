@@ -86,6 +86,8 @@ capslock & t::OnTogglePinOnTopPress()
 capslock & u::callSoft("ahk_exe WindowsTerminal.exe","WindowsTerminal.exe","wt --tabColor #2EC462")
 capslock & s::callSoft("ahk_exe sublime_text.exe","sublime_text.exe","D:\sublime3-portable-auh\sublime_text.exe")
 
+capslock & j::^+j
+
 ; ================  ctrl alt 系列
 
 ; prekey ctrl+alt w,e,r,f,v  wechat,vscode,notion,websearch(//todo ),music .
