@@ -1,8 +1,7 @@
-
 ; 在vscode中使用vim键位，通过esc切换到normal模式的时候，希望输入法切换到英文。
 #IfWinActive ahk_exe Code.exe
 ~Esc::
-    Send, ^{F8}
+    Send, ^{F8} ; 此按键为，搜狗输入法激活*中文*输入法按键。
     Send, {Shift}
 Return
 
