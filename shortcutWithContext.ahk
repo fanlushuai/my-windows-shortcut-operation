@@ -1,9 +1,16 @@
 ; 在vscode中使用vim键位，通过esc切换到normal模式的时候，希望输入法切换到英文。
 #IfWinActive ahk_exe Code.exe
+
+!j::NumpadDown
+
+!k::NumpadUp
+
 ~Esc::
     Send, ^{F8} ; 此按键为，搜狗输入法激活*中文*输入法按键。
     Send, {Shift}
 Return
+
+
 #IfWinActive
 
 ;; 切换翻译窗口。在utool上快捷键设置的为ctrl+alt+q，然后其没有提供最小化的功能
@@ -16,6 +23,10 @@ Return
 ^n::NumpadDown
 
 ^p::NumpadUp
+
+; !j::NumpadDown
+
+; !k::NumpadUp
 
 Esc::                ; 两次Esc，从地址栏回到页面选中
 Send, {Esc 2}
