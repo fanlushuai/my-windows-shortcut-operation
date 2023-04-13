@@ -14,7 +14,6 @@ SetCapsLockState , alwaysoff
 ;   }
 ;   return
 
-
 ; ; ^#t::Test()
 
 ; CapsLock & d::
