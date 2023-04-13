@@ -8,5 +8,6 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 #Include %A_ScriptDir%\desktop.ahk
 #Include %A_ScriptDir%\shortcut.ahk
 #Include %A_ScriptDir%\shortcutWithContext.ahk
+#Include %A_ScriptDir%\saveReload.ahk
 
 return
