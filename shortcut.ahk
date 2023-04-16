@@ -81,6 +81,7 @@ capslock & t::OnTogglePinOnTopPress()
 ; wt.exe
 ; "wt.exe --tabColor #2EC462 `; sp -H -p `"CMD`"" 这种转义符的方式不可用，不知道为何。使用空格拼接字符串的方式才行。https://segmentfault.com/a/1190000005069285
 ; 遇到了一个奇葩问题。新安装的nvm，无法在这种方式的cmd中打开。貌似不归属一个进程。环境变量好像是不能传递。可能需要重启电脑。或者还是使用最原始的，win+r，cmd方式。
+; 通过增加pwsh的profile，可以解决这个而问题（这是wt的bug）。启动的时候，重新加载环境变量。https://stackoverflow.com/questions/17794507/reload-the-path-in-powershell
 ^#r::callSoft("ahk_exe WindowsTerminal.exe","WindowsTerminal.exe","wt --tabColor #2EC462 `; sp -H -p " "PowerShell" "; mf up")
 capslock & u::callSoft("ahk_exe WindowsTerminal.exe","WindowsTerminal.exe","wt --tabColor #2EC462")
 capslock & s::callSoft("ahk_exe sublime_text.exe","sublime_text.exe","D:\sublime3-portable-auh\sublime_text.exe")
