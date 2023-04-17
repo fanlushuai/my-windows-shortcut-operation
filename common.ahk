@@ -50,3 +50,7 @@ ProcessExist(Name){
     return Errorlevel
 }
 
+ToEnglishWithSoug(){
+    Send, ^{F8} ; 此按键为，搜狗输入法激活*中文*输入法按键。
+    Send, {Shift}
+}

@@ -5,10 +5,12 @@
 
     !k::NumpadUp
 
-    ~Esc::
-        Send, ^{F8} ; 此按键为，搜狗输入法激活*中文*输入法按键。
-        Send, {Shift}
-    Return
+    ~Esc::ToEnglishWithSoug()
+    
+    CapsLock::
+        send,{Esc}
+        ToEnglishWithSoug()
+    Return 
 
 #IfWinActive
 
