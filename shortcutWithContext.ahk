@@ -8,9 +8,9 @@
     ~Esc::ToEnglishWithSoug()
     
     CapsLock::
-        send,{Esc}
+        send,Esc
         ToEnglishWithSoug()
-    Return 
+    return 
 
 #IfWinActive
 

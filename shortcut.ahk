@@ -39,7 +39,6 @@ SetCapsLockState , alwaysoff
 ; 	  	switchDesktopByNumber(4)
 ;   }
 ;   return
-CapsLock::Esc 
 
 ; 切换到上一个桌面。当使用两个虚拟桌面的时候，只需要循环按住就可以了。
 ; 因为lastopen不能保证在初始化的时候，进行loop。所以，需要next的方式。
