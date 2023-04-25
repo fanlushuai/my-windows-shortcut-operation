@@ -54,3 +54,13 @@ ToEnglishWithSoug(){
     Send, ^{F8} ; 此按键为，搜狗输入法激活*中文*输入法按键。
     Send, {Shift}
 }
+
+CloseChrome(){
+    SetTitleMatchMode 2
+    WinClose Google Chrome
+    WinClose Google Chrome
+    WinClose Google Chrome
+    WinClose Google Chrome
+    WinClose Google Chrome
+    WinClose Google Chrome
+}
