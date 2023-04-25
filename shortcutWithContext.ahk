@@ -14,6 +14,15 @@
 
 #IfWinActive
 
+#IfWinActive  ahk_exe idea64.exe
+    ~Esc::ToEnglishWithSoug()
+    
+    CapsLock::
+        send,{Esc}
+        ToEnglishWithSoug()
+    return 
+#IfWinActive
+
 ;; 切换翻译窗口。在utool上快捷键设置的为ctrl+alt+q，然后其没有提供最小化的功能
 ;; 在google上，进行crtl+n/p， 切换
 #IfWinActive ahk_exe uTools.exe
