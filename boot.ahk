@@ -13,6 +13,7 @@ SendMode Input ; Recommended for new scripts due to its superior speed and relia
     #s::
         send,^s ; save the script .
         Reload
+        MsgBox, "reload!!!!"
     return
 #IfWinActive
 
