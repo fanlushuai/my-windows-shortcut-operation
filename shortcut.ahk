@@ -103,8 +103,8 @@ capslock & j::^+j
 ^!v::callSoft("ahk_exe cloudmusic.exe","cloudmusic.exe","D:\ksoft\Netease\CloudMusic\cloudmusic.exe")
 
 ; 切换路由器中的clash代理选择
-^!1::Run, %comspec% /c "curl ""http://192.168.123.1:9090/proxies/Proxy-Dispatcher"" -X ""PUT"" --data-raw ""{\""name\"":\""Auto All\""}"",, Hide,
-^!2::Run, %comspec% /c "curl ""http://192.168.123.1:9090/proxies/Proxy-Dispatcher"" -X ""PUT"" --data-raw ""{\""name\"":\""Auto Singapore\""}"",, Hide,
+^!1::Run, %comspec% /c "curl ""http://192.168.123.1:9090/proxies/Proxy-Dispatcher"" -H ""Authorization: Bearer 6809ea8ea3d""  -X ""PUT"" --data-raw ""{\""name\"":\""Auto All\""}"",, Hide,
+^!2::Run, %comspec% /c "curl ""http://192.168.123.1:9090/proxies/Proxy-Dispatcher"" -H ""Authorization: Bearer 6809ea8ea3d"" -X ""PUT"" --data-raw ""{\""name\"":\""Auto Singapore\""}"",, Hide,
 
 ; ================== ctrl+ num 系列
 ^1::
