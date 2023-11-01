@@ -12,12 +12,11 @@ SendMode Input ; Recommended for new scripts due to its superior speed and relia
 #ifwinactive my-windows-shortcut-operation
     #s::
         send,^s ; save the script .
+        MsgBox, 64,,"Save & Reload ",0.4
         Reload
-        MsgBox, "reload!!!!"
     return
 #IfWinActive
 
 #c::CloseChrome()
-
 
 return
