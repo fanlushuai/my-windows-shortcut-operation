@@ -35,7 +35,7 @@ global UnPinAppProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor,
 ; Main
 
 mapDesktopsFromRegistry()
-OutputDebug "loading] desktops: " . %DesktopCount% "current:" . %CurrentDesktop%
+OutputDebug "loading] desktops: " . DesktopCount "current:" . CurrentDesktop
 
 initDesktopMiniCount()
 ; return
@@ -54,8 +54,9 @@ mapDesktopsFromRegistry()
     IdLength := 32
     SessionId := getSessionId()
     if (SessionId) {
-        CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops\CurrentVirtualDesktop")
+        CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops", 'CurrentVirtualDesktop')
         if A_LastError != 0 {
+            ; 这个注册表内容，在win11上没发现。
             CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\" . %SessionId% . "\VirtualDesktops\CurrentVirtualDesktop")
         }
         if (CurrentDesktopId) {
@@ -64,7 +65,7 @@ mapDesktopsFromRegistry()
     }
 
     ; Get a list of the UUIDs for all virtual desktops on the system
-    DesktopList := RegRead('HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops\VirtualDesktopIDs')
+    DesktopList := RegRead('HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops', 'VirtualDesktopIDs')
 
     if (DesktopList) {
         DesktopListLength := StrLen(DesktopList)
@@ -80,13 +81,13 @@ mapDesktopsFromRegistry()
     while (CurrentDesktopId and i < DesktopCount) {
         StartPos := (i * IdLength) + 1
         DesktopIter := SubStr(DesktopList, StartPos, IdLength)
-        OutputDebug "The iterator is pointing at " . %DesktopIter% . "and count is" %i%
+        OutputDebug "The iterator is pointing at " . DesktopIter . "and count is" i
 
         ; Break out if we find a match in the list. If we didn't find anything, keep the
         ; old guess and pray we're still correct :-D.
         if (DesktopIter = CurrentDesktopId) {
             CurrentDesktop := i + 1
-            OutputDebug "Current desktop number is " . %CurrentDesktop% . "with an ID of" %DesktopIter%
+            OutputDebug "Current desktop number is " . CurrentDesktop . "with an ID of" DesktopIter
             break
         }
         i++
@@ -105,18 +106,18 @@ getSessionId()
     try {
 
         ProcessId := DllCall("GetCurrentProcessId", "UInt")
-        OutputDebug " Current Process Id:" . %ProcessId%
+        OutputDebug " Current Process Id:" . ProcessId
     } catch Error as e {
 
         OutputDebug "Error getting current process id:" . e.Message
         return
     }
 
-
+    SessionId := 0
     try {
         ; 注意，Uint* ，后面是一个VarRef 即，&value
         DllCall("ProcessIdToSessionId", "UInt", ProcessId, "UInt*", &SessionId)
-        OutputDebug "Current Session Id: " %SessionId%
+        OutputDebug "Current Session Id: " SessionId
     } catch Error as e {
 
         OutputDebug "Error getting session id:" %e.Message%
@@ -133,7 +134,7 @@ _switchDesktopToTarget(targetDesktop)
 
     ; Don't attempt to switch to an invalid desktop
     if (targetDesktop > DesktopCount || targetDesktop < 1 || targetDesktop == CurrentDesktop) {
-        OutputDebug "[invalid] target:" %targetDesktop% "current:" %CurrentDesktop%
+        OutputDebug "[invalid] target:" targetDesktop "current:" CurrentDesktop
         return
     }
 
@@ -144,16 +145,16 @@ _switchDesktopToTarget(targetDesktop)
 
     ; Go right until we reach the desktop we want
     while (CurrentDesktop < targetDesktop) {
-        Send "{ LWin down } {LCtrl down} {Right down} {LWin up} {LCtrl up} {Right up}"
+        Send "{LWin down}{LCtrl down}{Right down}{LWin up}{LCtrl up}{Right up}"
         CurrentDesktop++
-        OutputDebug "[right] target:" %targetDesktop% "current:" %CurrentDesktop%
+        OutputDebug "[right] target:" targetDesktop "current:" CurrentDesktop
     }
 
     ; Go left until we reach the desktop we want
     while (CurrentDesktop > targetDesktop) {
-        Send "{ LWin down } {LCtrl down} {Left down} {Lwin up} {LCtrl up} {Left up}"
+        Send "{LWin down}{LCtrl down}{Left down}{Lwin up}{LCtrl up}{Left up}"
         CurrentDesktop--
-        OutputDebug "[left] target: " %targetDesktop% "current:" %CurrentDesktop%
+        OutputDebug "[left] target: " targetDesktop "current:" CurrentDesktop
     }
 
     NextDesktop := CurrentDesktop + 1
@@ -211,13 +212,13 @@ switchDesktopToLeft()
 
 focusTheForemostWindow(targetDesktop) {
     foremostWindowId := getForemostWindowIdOnDesktop(targetDesktop)
-    if isWindowNonMinimized(foremostWindowId) {
-        WinActivate "ahk_id" . %foremostWindowId%
+    if foremostWindowId != "" && isWindowNonMinimized(foremostWindowId) {
+        WinActivate "ahk_id" . foremostWindowId
     }
 }
 
 isWindowNonMinimized(windowId) {
-    return WinGetMinMax("ahk_id" . %windowId%) == -1
+    return WinGetMinMax("ahk_id" . windowId) == -1
 }
 
 getForemostWindowIdOnDesktop(n)
@@ -230,6 +231,8 @@ getForemostWindowIdOnDesktop(n)
     {
         windowIsOnDesktop := DllCall(IsWindowOnDesktopNumberProc, "UInt", windowID, "UInt", n)
         ; Select the first (and foremost) window which is in the specified desktop.
+        OutputDebug "w->" windowIsOnDesktop
+        ; //fix 这里，并不能找到=1的值。
         if (windowIsOnDesktop == 1) {
             return windowID
         }
@@ -265,7 +268,7 @@ createVirtualDesktop()
     Send "#^d"
     DesktopCount++
     CurrentDesktop := DesktopCount
-    OutputDebug "[create] desktops:" . %DesktopCount% . "current:" . %CurrentDesktop%
+    OutputDebug "[create] desktops:" . DesktopCount . "current:" . CurrentDesktop
 }
 
 ;
@@ -280,7 +283,7 @@ deleteVirtualDesktop()
     }
     DesktopCount--
     CurrentDesktop--
-    OutputDebug "[delete] desktops:" . %DesktopCount% . "current:" . %CurrentDesktop%
+    OutputDebug "[delete] desktops:" . DesktopCount . "current:" . CurrentDesktop
 }
 
 changeBackgroundWithDesktopId()
@@ -303,7 +306,7 @@ initDesktopMiniCount()
     j := i
     while (i-- > 0) {
         createVirtualDesktop()
-        OutputDebug "[initCount] DeskTopMiniCount: " . %DeskTopMiniCount% . "desktops:" . %DesktopCount% . "current:" . %CurrentDesktop%
+        OutputDebug "[initCount] DeskTopMiniCount: " . DeskTopMiniCount . "desktops:" . DesktopCount . "current:" . CurrentDesktop
     }
 
     if (j > 0 && DesktopBeforeScriptBoot > 0) {
