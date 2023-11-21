@@ -1,48 +1,48 @@
+#Requires AutoHotkey v2.0-a
+
 ; 在vscode中使用vim键位，通过esc切换到normal模式的时候，希望输入法切换到英文。
-#IfWinActive ahk_exe Code.exe
+#HotIf WinActive("ahk_exe Code.exe")
 
-    !j::NumpadDown
+!j::NumpadDown
 
-    !k::NumpadUp
+!k::NumpadUp
 
-    ~Esc::ToEnglishWithSoug()
-    
-    CapsLock::
-        send,{Esc}
-        ToEnglishWithSoug()
-    return 
+~Esc:: ToEnglishWithSoug()
 
-#IfWinActive
+CapsLock:: {
+    Send "{Esc}"
+    ToEnglishWithSoug()
+}
 
-#IfWinActive  ahk_exe idea64.exe
-    ~Esc::ToEnglishWithSoug()
-    
-    CapsLock::
-        send,{Esc}
-        ToEnglishWithSoug()
-    return 
-#IfWinActive
+#HotIf WinActive("ahk_exe idea64.exe")
+
+~Esc:: ToEnglishWithSoug()
+
+CapsLock:: {
+    Send "{Esc}"
+    ToEnglishWithSoug()
+}
+#HotIf WinActive("ahk_exe uTools.exe")
 
 ;; 切换翻译窗口。在utool上快捷键设置的为ctrl+alt+q，然后其没有提供最小化的功能
 ;; 在google上，进行crtl+n/p， 切换
-#IfWinActive ahk_exe uTools.exe
-    ^!q::!Esc
+^!q::!Esc
 
-    ^n::Send , {Down}
+^n:: Send "{Down}"
 
-    ^p::Send , {Up}
+^p:: Send "{Up}"
 
-    Esc::Send, {Esc 3} ; 
-#IfWinActive
+Esc:: Send "{Esc 3}" ;
+#HotIf WinActive("ahk_exe chrome.exe") ;配合地址栏，和搜索栏，以及surfingkeys。使用ctrl+n 和p 来切换下拉菜单
 
-#IfWinActive ahk_exe chrome.exe ; 配合地址栏，和搜索栏，以及surfingkeys。使用ctrl+n 和p 来切换下拉菜单
 
-    ^n::Send , {Down}
+^n:: Send "{ Down }"
 
-    ^p::Send , {Up}
+^p:: Send "{ Up }"
 
-    ~Esc::Send, {Esc 2} ; 两次Esc，从地址栏回到页面选中
-#IfWinActive ; 关闭上下文敏感
+~Esc:: Send "{ Esc 2 }" ; 两次Esc，从地址栏回到页面选中
+
+#HotIf
 ; #IfWinActive ahk_exe chrome.exe ; 配合地址栏，和搜索栏，以及surfingkeys。使用ctrl+n 和p 来切换下拉菜单
 
 ;     ^n::yyy()
@@ -61,14 +61,14 @@
 ;     MsgBox, Couldn't get focusedControl
 ; } else {
 ;     ControlGetText, focusText, %focusedControl%
-    
+
 ;     if(ErrorLevel) {
 ;         ControlGetText, focusText,, ahk_id %activeWindow%
 ;         Msgbox, Focused window text: %focusText%
 ;     } else {
 ;         Msgbox, Focused control text: %focusText%
 ;     }
-    
+
 ; }
 ; return
 ; }
@@ -79,7 +79,7 @@
 ; GetElementByName(AccObj, name) {
 ;     if (AccObj.accName(0) = name)
 ;        return AccObj
-    
+
 ;     for k, v in Acc_Children(AccObj)
 ;        if IsObject(obj := GetElementByName(v, name))
 ;           return obj
@@ -89,7 +89,7 @@
 ; 	try
 ;    if (AccObj.accValue(0) = text)
 ;       return AccObj
-   
+
 ;    for k, v in Acc_Children(AccObj)
 ;       if IsObject(obj := GetElementByText(v, text))
 ;          return obj
@@ -103,4 +103,3 @@
 ; AccAddressBar := GetElementByText(AccChrome, "地址和搜索栏")
 ; MsgBox % AccAddressBar.accValue(0)
 ; }
-

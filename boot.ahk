@@ -1,22 +1,22 @@
+#Requires AutoHotkey v2.0-a
 #SingleInstance Force ; The script will Reload if launched while already running
-#NoEnv ; Recommended for performance and compatibility with future AutoHotkey releases
-#KeyHistory 0 ; Ensures user privacy when debugging is not needed
+KeyHistory 0 ; Ensures user privacy when debugging is not needed
 SetWorkingDir %A_ScriptDir% ; Ensures a consistent starting directory
-SendMode Input ; Recommended for new scripts due to its superior speed and reliability
+SendMode "Input" ; Recommended for new scripts due to its superior speed and reliability
 
 #Include %A_ScriptDir%\common.ahk
 #Include %A_ScriptDir%\desktop.ahk
 #Include %A_ScriptDir%\shortcut.ahk
 #Include %A_ScriptDir%\shortcutWithContext.ahk
 
-#ifwinactive my-windows-shortcut-operation
-    #s::
-        send,^s ; save the script .
-        MsgBox, 64,,"Save & Reload ",0.4
-        Reload
-    return
-#IfWinActive
+#HotIf WinActive("my-windows-shortcut-operation")
+#s:: {
+    Send "{^s}" ; save the script .
+    MsgBox , "Save & Reload ", "16T0.4"
+    Reload
+}
+#HotIf
 
-#c::CloseChrome()
+#c:: CloseChrome()
 
 return

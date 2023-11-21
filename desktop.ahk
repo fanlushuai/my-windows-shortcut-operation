@@ -1,14 +1,14 @@
+#Requires AutoHotkey v2.0-a
 #SingleInstance Force ; The script will Reload if launched while already running
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases
-#KeyHistory 0 ; Ensures user privacy when debugging is not needed
+KeyHistory 0 ; Ensures user privacy when debugging is not needed
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability
+SendMode "Input"  ; Recommended for new scripts due to its superior speed and reliability
 
 ; Globals
 DesktopCount := 2        ; Windows starts with 2 desktops at boot
 CurrentDesktop := 1      ; Desktop count is 1-indexed (Microsoft numbers them this way)
 LastOpenedDesktop := 1
-NextDesktop:= CurrentDesktop             ; For loop desktop
+NextDesktop := CurrentDesktop             ; For loop desktop
 
 DesktopMiniCount := 2   ; keep desktop mini count at script boot.
 DesktopBeforeScriptBoot := -1 ; this param will keep desktop location before script run. desktop mini count will create new desktop while switch to new desktop.
@@ -31,9 +31,9 @@ global PinAppProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, ASt
 global UnPinAppProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "UnPinApp", "Ptr")
 
 ; Main
-SetKeyDelay, 75
+SetKeyDelay 75
 mapDesktopsFromRegistry()
-OutputDebug, [loading] desktops: %DesktopCount% current: %CurrentDesktop%
+OutputDebug "loading] desktops: "%DesktopCount%"current:"%CurrentDesktop%
 
 initDesktopMiniCount()
 ; return
@@ -44,17 +44,17 @@ initDesktopMiniCount()
 ; List of desktops appears to be in HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops
 ; On Windows 11 the current desktop UUID appears to be in the same location
 ; On previous versions in HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\1\VirtualDesktops
-mapDesktopsFromRegistry() 
+mapDesktopsFromRegistry()
 {
-    global CurrentDesktop, DesktopCount, DesktopBeforeScriptBoot,NextDesktop
+    global CurrentDesktop, DesktopCount, DesktopBeforeScriptBoot, NextDesktop
 
     ; Get the current desktop UUID. Length should be 32 always, but there's no guarantee this couldn't change in a later Windows release so we check.
     IdLength := 32
     SessionId := getSessionId()
     if (SessionId) {
-        RegRead, CurrentDesktopId, HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops, CurrentVirtualDesktop
-        if ErrorLevel {
-            RegRead, CurrentDesktopId, HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\%SessionId%\VirtualDesktops, CurrentVirtualDesktop
+        CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops\CurrentVirtualDesktop")
+        if A_LastError != 0 {
+            CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\"%SessionId%"\VirtualDesktops\CurrentVirtualDesktop")
         }
         if (CurrentDesktopId) {
             IdLength := StrLen(CurrentDesktopId)
@@ -62,7 +62,8 @@ mapDesktopsFromRegistry()
     }
 
     ; Get a list of the UUIDs for all virtual desktops on the system
-    RegRead, DesktopList, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops, VirtualDesktopIDs
+    DesktopList := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops\VirtualDesktopIDs")
+
     if (DesktopList) {
         DesktopListLength := StrLen(DesktopList)
         ; Figure out how many virtual desktops there are
@@ -77,21 +78,21 @@ mapDesktopsFromRegistry()
     while (CurrentDesktopId and i < DesktopCount) {
         StartPos := (i * IdLength) + 1
         DesktopIter := SubStr(DesktopList, StartPos, IdLength)
-        OutputDebug, The iterator is pointing at %DesktopIter% and count is %i%.
+        OutputDebug "The iterator is pointing at "%DesktopIter% "and count is" %i%
 
         ; Break out if we find a match in the list. If we didn't find anything, keep the
         ; old guess and pray we're still correct :-D.
         if (DesktopIter = CurrentDesktopId) {
             CurrentDesktop := i + 1
-            OutputDebug, Current desktop number is %CurrentDesktop% with an ID of %DesktopIter%.
+            OutputDebug "Current desktop number is "%CurrentDesktop% "with an ID of" %DesktopIter%
             break
         }
         i++
     }
     DesktopBeforeScriptBoot := CurrentDesktop
 
-    NextDesktop:=CurrentDesktop+1
-    NextDesktop:=(NextDesktop>DesktopCount?NextDesktop-DesktopCount:NextDesktop)
+    NextDesktop := CurrentDesktop + 1
+    NextDesktop := (NextDesktop > DesktopCount ? NextDesktop - DesktopCount : NextDesktop)
 }
 
 ;
@@ -99,19 +100,27 @@ mapDesktopsFromRegistry()
 ;
 getSessionId()
 {
-    ProcessId := DllCall("GetCurrentProcessId", "UInt")
-    if ErrorLevel {
-        OutputDebug, Error getting current process id: %ErrorLevel%
-        return
-    }
-    OutputDebug, Current Process Id: %ProcessId%
+    try {
 
-    DllCall("ProcessIdToSessionId", "UInt", ProcessId, "UInt*", SessionId)
-    if ErrorLevel {
-        OutputDebug, Error getting session id: %ErrorLevel%
+        ProcessId := DllCall("GetCurrentProcessId", "UInt")
+    } catch Error as e {
+
+        OutputDebug "Error getting current process id:" %e.Message%
         return
     }
-    OutputDebug, Current Session Id: %SessionId%
+
+    OutputDebug " Current Process Id:" %ProcessId%
+
+    try {
+
+        DllCall("ProcessIdToSessionId", "UInt", ProcessId, "UInt*", SessionId)
+    } catch Error as e {
+
+        OutputDebug "Error getting session id:" %e.Message%
+        return
+    }
+
+    OutputDebug "Current Session Id: "%SessionId%
     return SessionId
 }
 
@@ -122,41 +131,41 @@ _switchDesktopToTarget(targetDesktop)
 
     ; Don't attempt to switch to an invalid desktop
     if (targetDesktop > DesktopCount || targetDesktop < 1 || targetDesktop == CurrentDesktop) {
-        OutputDebug, [invalid] target: %targetDesktop% current: %CurrentDesktop%
+        OutputDebug "[invalid] target:" %targetDesktop% "current:" %CurrentDesktop%
         return
     }
 
     LastOpenedDesktop := CurrentDesktop
 
     ; Fixes the issue of active windows in intermediate desktops capturing the switch shortcut and therefore delaying or stopping the switching sequence. This also fixes the flashing window button after switching in the taskbar. More info: https://github.com/pmb6tz/windows-desktop-switcher/pull/19
-    WinActivate, ahk_class Shell_TrayWnd
+    WinActivate "ahk_class Shell_TrayWnd"
 
     ; Go right until we reach the desktop we want
-    while(CurrentDesktop < targetDesktop) {
-        Send {LWin down}{LCtrl down}{Right down}{LWin up}{LCtrl up}{Right up}
+    while (CurrentDesktop < targetDesktop) {
+        Send "{ LWin down } {LCtrl down} {Right down} {LWin up} {LCtrl up} {Right up}"
         CurrentDesktop++
-        OutputDebug, [right] target: %targetDesktop% current: %CurrentDesktop%
+        OutputDebug "[right] target:" %targetDesktop% "current:" %CurrentDesktop%
     }
 
     ; Go left until we reach the desktop we want
-    while(CurrentDesktop > targetDesktop) {
-        Send {LWin down}{LCtrl down}{Left down}{Lwin up}{LCtrl up}{Left up}
+    while (CurrentDesktop > targetDesktop) {
+        Send "{ LWin down } {LCtrl down} {Left down} {Lwin up} {LCtrl up} {Left up}"
         CurrentDesktop--
-        OutputDebug, [left] target: %targetDesktop% current: %CurrentDesktop%
+        OutputDebug "[left] target: "%targetDesktop% "current:" %CurrentDesktop%
     }
 
-    NextDesktop:=CurrentDesktop+1
-    NextDesktop:=(NextDesktop>DesktopCount?NextDesktop-DesktopCount:NextDesktop)
+    NextDesktop := CurrentDesktop + 1
+    NextDesktop := (NextDesktop > DesktopCount ? NextDesktop - DesktopCount : NextDesktop)
 
     ; Makes the WinActivate fix less intrusive
-    Sleep, 50
+    Sleep 50
     focusTheForemostWindow(targetDesktop)
 
     ; associate with background picture
     changeBackgroundWithDesktopId()
 }
 
-updateGlobalVariables() 
+updateGlobalVariables()
 {
     ; Re-generate the list of desktops and where we fit in that. We do this because
     ; the user may have switched desktops via some other means than the script.
@@ -179,7 +188,7 @@ switchDesktopToLastOpened()
 
 switchDesktopToNext()
 {
-    global CurrentDesktop, DesktopCount, LastOpenedDesktop,NextDesktop
+    global CurrentDesktop, DesktopCount, LastOpenedDesktop, NextDesktop
     updateGlobalVariables()
     _switchDesktopToTarget(NextDesktop)
 }
@@ -201,13 +210,12 @@ switchDesktopToLeft()
 focusTheForemostWindow(targetDesktop) {
     foremostWindowId := getForemostWindowIdOnDesktop(targetDesktop)
     if isWindowNonMinimized(foremostWindowId) {
-        WinActivate, ahk_id %foremostWindowId%
+        WinActivate "ahk_id"%foremostWindowId%
     }
 }
 
 isWindowNonMinimized(windowId) {
-    WinGet MMX, MinMax, ahk_id %windowId%
-    return MMX != -1
+    return WinGetMinMax("ahk_id"%windowId%) == -1
 }
 
 getForemostWindowIdOnDesktop(n)
@@ -215,9 +223,9 @@ getForemostWindowIdOnDesktop(n)
     n := n - 1 ; Desktops start at 0, while in script it's 1
 
     ; winIDList contains a list of windows IDs ordered from the top to the bottom for each desktop.
-    WinGet winIDList, list
-    Loop % winIDList {
-        windowID := % winIDList%A_Index%
+    winIDList := WinGetList()
+    for windowID in winIDList
+    {
         windowIsOnDesktop := DllCall(IsWindowOnDesktopNumberProc, UInt, windowID, UInt, n)
         ; Select the first (and foremost) window which is in the specified desktop.
         if (windowIsOnDesktop == 1) {
@@ -227,21 +235,21 @@ getForemostWindowIdOnDesktop(n)
 }
 
 MoveCurrentWindowToDesktop(desktopNumber) {
-    WinGet, activeHwnd, ID, A
+    activeHwnd := WinGetControlsHwnd("A")
     DllCall(MoveWindowToDesktopNumberProc, UInt, activeHwnd, UInt, desktopNumber - 1)
     switchDesktopByNumber(desktopNumber)
 }
 
 MoveCurrentWindowToLastOpened() {
     global CurrentDesktop, DesktopCount, LastOpenedDesktop
-    WinGet, activeHwnd, ID, A
+    activeHwnd := WinGetControlsHwnd("A")
     DllCall(MoveWindowToDesktopNumberProc, UInt, activeHwnd, UInt, LastOpenedDesktop - 1)
     switchDesktopByNumber(LastOpenedDesktop)
 }
 
 MoveCurrentWindowToNext() {
-    global CurrentDesktop, DesktopCount, LastOpenedDesktop , NextDesktop
-    WinGet, activeHwnd, ID, A
+    global CurrentDesktop, DesktopCount, LastOpenedDesktop, NextDesktop
+    activeHwnd := WinGetControlsHwnd("A")
     DllCall(MoveWindowToDesktopNumberProc, UInt, activeHwnd, UInt, NextDesktop - 1)
     switchDesktopByNumber(NextDesktop)
 }
@@ -252,10 +260,10 @@ MoveCurrentWindowToNext() {
 createVirtualDesktop()
 {
     global CurrentDesktop, DesktopCount
-    Send, #^d
+    Send "#^d"
     DesktopCount++
     CurrentDesktop := DesktopCount
-    OutputDebug, [create] desktops: %DesktopCount% current: %CurrentDesktop%
+    OutputDebug "[create] desktops:" %DesktopCount% "current:" %CurrentDesktop%
 }
 
 ;
@@ -264,13 +272,13 @@ createVirtualDesktop()
 deleteVirtualDesktop()
 {
     global CurrentDesktop, DesktopCount, LastOpenedDesktop
-    Send, #^{F4}
+    Send "#^{F4}"
     if (LastOpenedDesktop >= CurrentDesktop) {
         LastOpenedDesktop--
     }
     DesktopCount--
     CurrentDesktop--
-    OutputDebug, [delete] desktops: %DesktopCount% current: %CurrentDesktop%
+    OutputDebug "[delete] desktops:" %DesktopCount% "current:" %CurrentDesktop%
 }
 
 changeBackgroundWithDesktopId()
@@ -288,38 +296,34 @@ changeBackgroundWithDesktopId()
 
 initDesktopMiniCount()
 {
-	global DeskTopMiniCount, DesktopCount, CurrentDesktop, DesktopBeforeScriptBoot
-	i := DeskTopMiniCount - DesktopCount
-	j := i
- 	while (i-- > 0){
- 		createVirtualDesktop()
- 		OutputDebug, [initCount] DeskTopMiniCount: %DeskTopMiniCount% desktops: %DesktopCount% current: %CurrentDesktop%
- 	}
+    global DeskTopMiniCount, DesktopCount, CurrentDesktop, DesktopBeforeScriptBoot
+    i := DeskTopMiniCount - DesktopCount
+    j := i
+    while (i-- > 0) {
+        createVirtualDesktop()
+        OutputDebug "[initCount] DeskTopMiniCount: "%DeskTopMiniCount% "desktops:" %DesktopCount% "current:" %CurrentDesktop%
+    }
 
- 	if(j > 0 && DesktopBeforeScriptBoot > 0){
+    if (j > 0 && DesktopBeforeScriptBoot > 0) {
         _switchDesktopToTarget(DesktopBeforeScriptBoot > DesktopCount ? DesktopCount : DesktopBeforeScriptBoot)
-    }    
+    }
 }
 
 _GetCurrentWindowID() {
-    WinGet, activeHwnd, ID, A
-    return activeHwnd
+    return WinGetID("A")
 }
 
 _GetCurrentWindowTitle() {
-    WinGetTitle, activeHwnd, A
-    return activeHwnd
+    return WinGetTitle("A")
 }
 
 _GetCurrentWindowProcess() {
-    WinGet, ProcessName, ProcessName, A
-    ; MsgBox, %ProcessName%
-    return ProcessName
+    return WinGetProcessName("A")
 }
 
 OnTogglePinOnTopPress() {
-        _notif(_GetCurrentWindowProcess(), "Toggled 'Pin On Top'")
-	Winset, Alwaysontop, , A
+    _notif(_GetCurrentWindowProcess(), "Toggled 'Pin On Top'")
+    WinSetAlwaysOnTop -1, "A"
 }
 
 OnTogglePinWindowPress() {
@@ -348,59 +352,52 @@ OnTogglePinAppPress() {
     }
 }
 
-_PinWindow(windowID:="") {
+_PinWindow(windowID := "") {
     _CallWindowProc(PinWindowProc, windowID)
 }
 
-_UnpinWindow(windowID:="") {
+_UnpinWindow(windowID := "") {
     _CallWindowProc(UnpinWindowProc, windowID)
 }
 
-_GetIsWindowPinned(windowID:="") {
+_GetIsWindowPinned(windowID := "") {
     return _CallWindowProc(IsPinnedWindowProc, windowID)
 }
 
-_PinApp(windowID:="") {
+_PinApp(windowID := "") {
     _CallWindowProc(PinAppProc, windowID)
 }
 
-_UnpinApp(windowID:="") {
+_UnpinApp(windowID := "") {
     _CallWindowProc(UnpinAppProc, windowID)
 }
 
-_GetIsAppPinned(windowID:="") {
+_GetIsAppPinned(windowID := "") {
     return _CallWindowProc(IsPinnedAppProc, windowID)
 }
 
-_CallWindowProc(proc, window:="") {
+_CallWindowProc(proc, window := "") {
     if (window == "") {
         window := _GetCurrentWindowID()
     }
     return DllCall(proc, UInt, window)
 }
 
-_notif(txt, title:="") {
+_notif(txt, title := "") {
     HideTrayTip()
     title := _TruncateString(title, 100)
-    TrayTip, %title%, %txt%, 1 , 16
+    TrayTip %txt%, %title%, "Iconi Mute"
 }
 
 HideTrayTip() {
-    TrayTip  ; Attempt to hide it the normal way.
-    if SubStr(A_OSVersion,1,3) = "10." {
-        Menu Tray, NoIcon
-        Sleep 200  ; It may be necessary to adjust this sleep.
-        Menu Tray, Icon
-    }	
+    TrayTip  ; 尝试以普通的方式隐藏它.
+    if SubStr(A_OSVersion, 1, 3) = "10." {
+        A_IconHidden := true
+        Sleep 200  ; 可能有必要调整 sleep 的时间.
+        A_IconHidden := false
+    }
 }
 
-_TruncateString(string:="", n:=10) {
-    return (StrLen(string) > n ? SubStr(string, 1, n-3) . "..." : string)	
+_TruncateString(string := "", n := 10) {
+    return (StrLen(string) > n ? SubStr(string, 1, n - 3) . "..." : string)
 }
-
-
-
-
-
-
-		
