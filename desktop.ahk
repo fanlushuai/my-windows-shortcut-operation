@@ -57,7 +57,7 @@ mapDesktopsFromRegistry()
         CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops", 'CurrentVirtualDesktop')
         if A_LastError != 0 {
             ; 这个注册表内容，在win11上没发现。
-            CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\" . %SessionId% . "\VirtualDesktops\CurrentVirtualDesktop")
+            CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\" . SessionId . "\VirtualDesktops\CurrentVirtualDesktop")
         }
         if (CurrentDesktopId) {
             IdLength := StrLen(CurrentDesktopId)
@@ -120,7 +120,7 @@ getSessionId()
         OutputDebug "Current Session Id: " SessionId
     } catch Error as e {
 
-        OutputDebug "Error getting session id:" %e.Message%
+        OutputDebug "Error getting session id:" e.Message
         return
     }
 
@@ -240,21 +240,21 @@ getForemostWindowIdOnDesktop(n)
 }
 
 MoveCurrentWindowToDesktop(desktopNumber) {
-    activeHwnd := WinGetControlsHwnd("A")
+    activeHwnd := WinExist("A")
     DllCall(MoveWindowToDesktopNumberProc, "UInt", activeHwnd, "UInt", desktopNumber - 1)
     switchDesktopByNumber(desktopNumber)
 }
 
 MoveCurrentWindowToLastOpened() {
     global CurrentDesktop, DesktopCount, LastOpenedDesktop
-    activeHwnd := WinGetControlsHwnd("A")
+    activeHwnd := WinExist("A")
     DllCall(MoveWindowToDesktopNumberProc, "UInt", activeHwnd, "UInt", LastOpenedDesktop - 1)
     switchDesktopByNumber(LastOpenedDesktop)
 }
 
 MoveCurrentWindowToNext() {
     global CurrentDesktop, DesktopCount, LastOpenedDesktop, NextDesktop
-    activeHwnd := WinGetControlsHwnd("A")
+    activeHwnd := WinExist("A")
     DllCall(MoveWindowToDesktopNumberProc, "UInt", activeHwnd, "UInt", NextDesktop - 1)
     switchDesktopByNumber(NextDesktop)
 }
@@ -391,7 +391,7 @@ _CallWindowProc(proc, window := "") {
 _notif(txt, title := "") {
     HideTrayTip()
     title := _TruncateString(title, 100)
-    TrayTip %txt%, %title%, "Iconi Mute"
+    TrayTip txt, title, "Iconi Mute"
 }
 
 HideTrayTip() {
