@@ -1,9 +1,9 @@
 #Requires AutoHotkey v2.0-a
 #SingleInstance Force ; The script will Reload if launched while already running
 KeyHistory 0 ; Ensures user privacy when debugging is not needed
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
+SetWorkingDir A_ScriptDir  ; Ensures a consistent starting directory
 SendMode "Input"  ; Recommended for new scripts due to its superior speed and reliability
-
+SetKeyDelay 75
 ; Globals
 DesktopCount := 2        ; Windows starts with 2 desktops at boot
 CurrentDesktop := 1      ; Desktop count is 1-indexed (Microsoft numbers them this way)
@@ -18,22 +18,24 @@ AutoAssociateBackgroundWithDesktop := false
 BackgroundPicPaths := [".\bgPic\1.jpg", ".\bgPic\2.jpg"]
 
 
-; DLL
+; DLL 预加载dll库
 hVirtualDesktopAccessor := DllCall("LoadLibrary", "Str", A_ScriptDir . "\VirtualDesktopAccessor.dll", "Ptr")
-global IsWindowOnDesktopNumberProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "IsWindowOnDesktopNumber", "Ptr")
-global MoveWindowToDesktopNumberProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "MoveWindowToDesktopNumber", "Ptr")
 
-global IsPinnedWindowProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "IsPinnedWindow", "Ptr")
-global PinWindowProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "PinWindow", "Ptr")
-global UnPinWindowProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "UnPinWindow", "Ptr")
-global IsPinnedAppProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "IsPinnedApp", "Ptr")
-global PinAppProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "PinApp", "Ptr")
-global UnPinAppProc := DllCall("GetProcAddress", Ptr, hVirtualDesktopAccessor, AStr, "UnPinApp", "Ptr")
+; DllCall 参数解释：方法，参数1类型，参数1参数值 ,参数2类型，参数2参数值,。。。。 返回值类型
+global IsWindowOnDesktopNumberProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "IsWindowOnDesktopNumber", "Ptr")
+global MoveWindowToDesktopNumberProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "MoveWindowToDesktopNumber", "Ptr")
+
+global IsPinnedWindowProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "IsPinnedWindow", "Ptr")
+global PinWindowProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "PinWindow", "Ptr")
+global UnPinWindowProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "UnPinWindow", "Ptr")
+global IsPinnedAppProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "IsPinnedApp", "Ptr")
+global PinAppProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "PinApp", "Ptr")
+global UnPinAppProc := DllCall("GetProcAddress", "Ptr", hVirtualDesktopAccessor, "AStr", "UnPinApp", "Ptr")
 
 ; Main
-SetKeyDelay 75
+
 mapDesktopsFromRegistry()
-OutputDebug "loading] desktops: "%DesktopCount%"current:"%CurrentDesktop%
+OutputDebug "loading] desktops: " . %DesktopCount% "current:" . %CurrentDesktop%
 
 initDesktopMiniCount()
 ; return
@@ -54,7 +56,7 @@ mapDesktopsFromRegistry()
     if (SessionId) {
         CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops\CurrentVirtualDesktop")
         if A_LastError != 0 {
-            CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\"%SessionId%"\VirtualDesktops\CurrentVirtualDesktop")
+            CurrentDesktopId := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SessionInfo\" . %SessionId% . "\VirtualDesktops\CurrentVirtualDesktop")
         }
         if (CurrentDesktopId) {
             IdLength := StrLen(CurrentDesktopId)
@@ -62,7 +64,7 @@ mapDesktopsFromRegistry()
     }
 
     ; Get a list of the UUIDs for all virtual desktops on the system
-    DesktopList := RegRead("HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops\VirtualDesktopIDs")
+    DesktopList := RegRead('HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops\VirtualDesktopIDs')
 
     if (DesktopList) {
         DesktopListLength := StrLen(DesktopList)
@@ -78,13 +80,13 @@ mapDesktopsFromRegistry()
     while (CurrentDesktopId and i < DesktopCount) {
         StartPos := (i * IdLength) + 1
         DesktopIter := SubStr(DesktopList, StartPos, IdLength)
-        OutputDebug "The iterator is pointing at "%DesktopIter% "and count is" %i%
+        OutputDebug "The iterator is pointing at " . %DesktopIter% . "and count is" %i%
 
         ; Break out if we find a match in the list. If we didn't find anything, keep the
         ; old guess and pray we're still correct :-D.
         if (DesktopIter = CurrentDesktopId) {
             CurrentDesktop := i + 1
-            OutputDebug "Current desktop number is "%CurrentDesktop% "with an ID of" %DesktopIter%
+            OutputDebug "Current desktop number is " . %CurrentDesktop% . "with an ID of" %DesktopIter%
             break
         }
         i++
@@ -103,24 +105,24 @@ getSessionId()
     try {
 
         ProcessId := DllCall("GetCurrentProcessId", "UInt")
+        OutputDebug " Current Process Id:" . %ProcessId%
     } catch Error as e {
 
-        OutputDebug "Error getting current process id:" %e.Message%
+        OutputDebug "Error getting current process id:" . e.Message
         return
     }
 
-    OutputDebug " Current Process Id:" %ProcessId%
 
     try {
-
-        DllCall("ProcessIdToSessionId", "UInt", ProcessId, "UInt*", SessionId)
+        ; 注意，Uint* ，后面是一个VarRef 即，&value
+        DllCall("ProcessIdToSessionId", "UInt", ProcessId, "UInt*", &SessionId)
+        OutputDebug "Current Session Id: " %SessionId%
     } catch Error as e {
 
         OutputDebug "Error getting session id:" %e.Message%
         return
     }
 
-    OutputDebug "Current Session Id: "%SessionId%
     return SessionId
 }
 
@@ -151,7 +153,7 @@ _switchDesktopToTarget(targetDesktop)
     while (CurrentDesktop > targetDesktop) {
         Send "{ LWin down } {LCtrl down} {Left down} {Lwin up} {LCtrl up} {Left up}"
         CurrentDesktop--
-        OutputDebug "[left] target: "%targetDesktop% "current:" %CurrentDesktop%
+        OutputDebug "[left] target: " %targetDesktop% "current:" %CurrentDesktop%
     }
 
     NextDesktop := CurrentDesktop + 1
@@ -210,12 +212,12 @@ switchDesktopToLeft()
 focusTheForemostWindow(targetDesktop) {
     foremostWindowId := getForemostWindowIdOnDesktop(targetDesktop)
     if isWindowNonMinimized(foremostWindowId) {
-        WinActivate "ahk_id"%foremostWindowId%
+        WinActivate "ahk_id" . %foremostWindowId%
     }
 }
 
 isWindowNonMinimized(windowId) {
-    return WinGetMinMax("ahk_id"%windowId%) == -1
+    return WinGetMinMax("ahk_id" . %windowId%) == -1
 }
 
 getForemostWindowIdOnDesktop(n)
@@ -226,7 +228,7 @@ getForemostWindowIdOnDesktop(n)
     winIDList := WinGetList()
     for windowID in winIDList
     {
-        windowIsOnDesktop := DllCall(IsWindowOnDesktopNumberProc, UInt, windowID, UInt, n)
+        windowIsOnDesktop := DllCall(IsWindowOnDesktopNumberProc, "UInt", windowID, "UInt", n)
         ; Select the first (and foremost) window which is in the specified desktop.
         if (windowIsOnDesktop == 1) {
             return windowID
@@ -236,21 +238,21 @@ getForemostWindowIdOnDesktop(n)
 
 MoveCurrentWindowToDesktop(desktopNumber) {
     activeHwnd := WinGetControlsHwnd("A")
-    DllCall(MoveWindowToDesktopNumberProc, UInt, activeHwnd, UInt, desktopNumber - 1)
+    DllCall(MoveWindowToDesktopNumberProc, "UInt", activeHwnd, "UInt", desktopNumber - 1)
     switchDesktopByNumber(desktopNumber)
 }
 
 MoveCurrentWindowToLastOpened() {
     global CurrentDesktop, DesktopCount, LastOpenedDesktop
     activeHwnd := WinGetControlsHwnd("A")
-    DllCall(MoveWindowToDesktopNumberProc, UInt, activeHwnd, UInt, LastOpenedDesktop - 1)
+    DllCall(MoveWindowToDesktopNumberProc, "UInt", activeHwnd, "UInt", LastOpenedDesktop - 1)
     switchDesktopByNumber(LastOpenedDesktop)
 }
 
 MoveCurrentWindowToNext() {
     global CurrentDesktop, DesktopCount, LastOpenedDesktop, NextDesktop
     activeHwnd := WinGetControlsHwnd("A")
-    DllCall(MoveWindowToDesktopNumberProc, UInt, activeHwnd, UInt, NextDesktop - 1)
+    DllCall(MoveWindowToDesktopNumberProc, "UInt", activeHwnd, "UInt", NextDesktop - 1)
     switchDesktopByNumber(NextDesktop)
 }
 
@@ -263,7 +265,7 @@ createVirtualDesktop()
     Send "#^d"
     DesktopCount++
     CurrentDesktop := DesktopCount
-    OutputDebug "[create] desktops:" %DesktopCount% "current:" %CurrentDesktop%
+    OutputDebug "[create] desktops:" . %DesktopCount% . "current:" . %CurrentDesktop%
 }
 
 ;
@@ -278,7 +280,7 @@ deleteVirtualDesktop()
     }
     DesktopCount--
     CurrentDesktop--
-    OutputDebug "[delete] desktops:" %DesktopCount% "current:" %CurrentDesktop%
+    OutputDebug "[delete] desktops:" . %DesktopCount% . "current:" . %CurrentDesktop%
 }
 
 changeBackgroundWithDesktopId()
@@ -290,7 +292,7 @@ changeBackgroundWithDesktopId()
         filePath := (A_WorkingDir . substr(filePath, 2))
     }
     if (AutoAssociateBackgroundWithDesktop and filePath and FileExist(filePath)) {
-        DllCall("SystemParametersInfo", UInt, 0x14, UInt, 0, Str, filePath, UInt, 1)
+        DllCall("SystemParametersInfo", "UInt", 0x14, "UInt", 0, "Str", filePath, "UInt", 1)
     }
 }
 
@@ -301,7 +303,7 @@ initDesktopMiniCount()
     j := i
     while (i-- > 0) {
         createVirtualDesktop()
-        OutputDebug "[initCount] DeskTopMiniCount: "%DeskTopMiniCount% "desktops:" %DesktopCount% "current:" %CurrentDesktop%
+        OutputDebug "[initCount] DeskTopMiniCount: " . %DeskTopMiniCount% . "desktops:" . %DesktopCount% . "current:" . %CurrentDesktop%
     }
 
     if (j > 0 && DesktopBeforeScriptBoot > 0) {
@@ -380,7 +382,7 @@ _CallWindowProc(proc, window := "") {
     if (window == "") {
         window := _GetCurrentWindowID()
     }
-    return DllCall(proc, UInt, window)
+    return DllCall(proc, "UInt", window)
 }
 
 _notif(txt, title := "") {

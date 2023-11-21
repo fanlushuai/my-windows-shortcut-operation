@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0-a
 #SingleInstance Force ; The script will Reload if launched while already running
 KeyHistory 0 ; Ensures user privacy when debugging is not needed
-SetWorkingDir %A_ScriptDir% ; Ensures a consistent starting directory
+SetWorkingDir A_ScriptDir ; Ensures a consistent starting directory
 SendMode "Input" ; Recommended for new scripts due to its superior speed and reliability
 
 #Include %A_ScriptDir%\common.ahk
