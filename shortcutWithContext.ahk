@@ -36,11 +36,11 @@ Esc:: Send "{Esc 3}" ;
 #HotIf WinActive("ahk_exe chrome.exe") ;配合地址栏，和搜索栏，以及surfingkeys。使用ctrl+n 和p 来切换下拉菜单
 
 
-^n:: Send "{ Down }"
+^n:: Send "{Down}"
 
-^p:: Send "{ Up }"
+^p:: Send "{Up}"
 
-~Esc:: Send "{ Esc 2 }" ; 两次Esc，从地址栏回到页面选中
+~Esc:: Send "{Esc 2}" ; 两次Esc，从地址栏回到页面选中
 
 #HotIf
 ; #IfWinActive ahk_exe chrome.exe ; 配合地址栏，和搜索栏，以及surfingkeys。使用ctrl+n 和p 来切换下拉菜单
