@@ -221,6 +221,10 @@ isWindowNonMinimized(windowId) {
     return WinGetMinMax("ahk_id" . windowId) == -1
 }
 
+
+; ;测试
+; ^!2:: getForemostWindowIdOnDesktop(1)
+
 getForemostWindowIdOnDesktop(n)
 {
     n := n - 1 ; Desktops start at 0, while in script it's 1
@@ -231,12 +235,14 @@ getForemostWindowIdOnDesktop(n)
     {
         windowIsOnDesktop := DllCall(IsWindowOnDesktopNumberProc, "UInt", windowID, "UInt", n)
         ; Select the first (and foremost) window which is in the specified desktop.
-        OutputDebug "w->" windowIsOnDesktop
-        ; //fix 这里，并不能找到=1的值。
         if (windowIsOnDesktop == 1) {
             return windowID
         }
     }
+}
+
+ToBase(n, b) {
+    return (n < b ? "" : ToBase(n // b, b)) . ((d := Mod(n, b)) < 10 ? d : Chr(d + 55))
 }
 
 MoveCurrentWindowToDesktop(desktopNumber) {
