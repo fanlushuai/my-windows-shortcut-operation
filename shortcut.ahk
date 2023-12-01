@@ -88,7 +88,7 @@ capslock & t:: OnTogglePinOnTopPress()
 ; 遇到了一个奇葩问题。新安装的nvm，无法在这种方式的cmd中打开。貌似不归属一个进程。环境变量好像是不能传递。可能需要重启电脑。或者还是使用最原始的，win+r，cmd方式。
 ; 通过增加pwsh的profile，可以解决这个而问题（这是wt的bug）。启动的时候，重新加载环境变量。https://stackoverflow.com/questions/17794507/reload-the-path-in-powershell
 ^#r:: callSoft("ahk_exe WindowsTerminal.exe", "WindowsTerminal.exe", "wt --tabColor #2EC462 `; sp -H -p " "PowerShell" "; mf up")
-capslock & u:: callSoft("ahk_exe WindowsTerminal.exe", "WindowsTerminal.exe", "wt --tabColor #2EC462")
+capslock & w:: callSoft("ahk_exe WindowsTerminal.exe", "WindowsTerminal.exe", "wt --tabColor #2EC462")
 capslock & s:: callSoft("ahk_exe sublime_text.exe", "sublime_text.exe", "D:\sublime3-portable-auh\sublime_text.exe")
 
 capslock & j::^+j
@@ -99,7 +99,7 @@ capslock & j::^+j
 ; special handling: websearch use two step active and send words for control
 ; Attention: Before using , please replace user path exe for run correctlly！！！！！
 
-^!w:: callSoft("ahk_class WeChatMainWndForPC", "WeChat.exe", "C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
+^!w:: callSoft("ahk_exe WeChat.exe", "WeChat.exe", "C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
 ;^!q::callSoft("ahk_class Chrome_WidgetWin_1","uTools.exe","C:\Users\A\AppData\Local\Programs\utools\uTools.exe")
 ^!e:: callSoft("ahk_exe Code.exe", "Code.exe", "D:\Microsoft VS Code\Code.exe")
 ^!r:: callSoft("ahk_exe Notion.exe", "Notion.exe", "C:\Users\A\AppData\Local\Programs\Notion\Notion.exe")
