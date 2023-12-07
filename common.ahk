@@ -21,12 +21,16 @@ callSoft(winUnique, proc, executablePath) {
     }
     if (PID := ProcessExist(proc)) {
         Run executablePath ;
+        Sleep 800
+        callSoft(winUnique,proc,executablePath)
     } else {
         Run executablePath ; win not exist 的情况不知道怎么回事。程序已经运行了。只是窗口没有。只能先通过这种方式，调出主窗口了。但是这存在一个问题，可能会调出来两次。
+        Sleep 800
+        callSoft(winUnique,proc,executablePath)
     }
 }
 
-; 自动输入gg 关键字。充当全局网页搜索框
+; 自动输入gg 关键字。充当全局网页搜索框a
 keyfunc_listary() {
     ; Send ctrl+space (the default hotkey of Listary) to activate Listary
     sendinput "^{Space}"
