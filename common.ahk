@@ -21,12 +21,12 @@ callSoft(winUnique, proc, executablePath) {
     }
     if (PID := ProcessExist(proc)) {
         Run executablePath ;
-        Sleep 800
-        callSoft(winUnique,proc,executablePath)
+        WinWait winUnique
+        WinActivate winUnique ; Use the window found by WinExist.
     } else {
         Run executablePath ; win not exist 的情况不知道怎么回事。程序已经运行了。只是窗口没有。只能先通过这种方式，调出主窗口了。但是这存在一个问题，可能会调出来两次。
-        Sleep 800
-        callSoft(winUnique,proc,executablePath)
+        WinWait winUnique
+        WinActivate winUnique ; Use the window found by WinExist.
     }
 }
 
