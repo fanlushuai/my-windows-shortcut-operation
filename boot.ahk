@@ -12,7 +12,7 @@ SendMode "Input" ; Recommended for new scripts due to its superior speed and rel
 #HotIf WinActive("my-windows-shortcut-operation")
 #s:: {
     Send "{^s}" ; save the script .
-    MsgBox "Save & Reload", , "Iconi T1.2"
+    MsgBox "Save & Reload", , "Iconi T0.6"
     Reload
 }
 #HotIf
