@@ -45,7 +45,7 @@ SetCapsLockState "AlwaysOff"
 ; 切换到上一个桌面。当使用两个虚拟桌面的时候，只需要循环按住就可以了。
 ; 因为lastopen不能保证在初始化的时候，进行loop。所以，需要next的方式。
 CapsLock & f:: {
-  if GetKeyState("Alt","P") {
+  if GetKeyState("Alt", "P") {
     ; MoveCurrentWindowToLastOpened()
     OutputDebug "MoveCurrentWindowToNext"
     MoveCurrentWindowToNext()
@@ -99,9 +99,33 @@ capslock & j::^+j
 ; special handling: websearch use two step active and send words for control
 ; Attention: Before using , please replace user path exe for run correctlly！！！！！
 
-^!w:: callSoft("ahk_exe WeChat.exe", "WeChat.exe", "C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
+^!w:: callSoft("ahk_exe WeChat.exe", "WeChat.exe"
+  , "C:\Program Files (x86)\Tencent\WeChat\WeChat.exe")
 ;^!q::callSoft("ahk_class Chrome_WidgetWin_1","uTools.exe","C:\Users\A\AppData\Local\Programs\utools\uTools.exe")
-^!e:: callSoft("ahk_exe Code.exe", "Code.exe", "D:\Microsoft VS Code\Code.exe")
+; ^!e:: callSoft("ahk_exe Code.exe", "Code.exe", "D:\Microsoft VS Code\Code.exe")
+^!e:: {
+  ;  Run A_ComSpec  ' /c   ""D:\Microsoft VS Code\Code.exe"  " E:\code\blog"" '
+  winUnique := "blog"
+  If WinExist(winUnique)
+  {
+    if WinActive(winUnique) {
+      ; WinMinimize ; Use the window found by WinExist. sometimes occur a bug windows active but also min
+      SendInput "!{Esc}" ; open last active . but if last is not exist???? haha ,maybe wont occur
+    } else {
+      WinActivate ; Use the window found by WinExist.
+    }
+
+    ; Click ;
+    return
+  }
+
+
+  Run A_ComSpec ' /c   ""D:\Microsoft VS Code\Code.exe"  " E:\code\blog"" '
+  WinWait "C:\WINDOWS\system32\cmd.exe"
+  Send "{Enter}"
+  ;  Send "^d"
+  ;  Run 'C:\Windows\system32\cmd.exe' . ' /c   "ping baidu.com" '
+}
 ^!r:: callSoft("ahk_exe Notion.exe", "Notion.exe", "C:\Users\A\AppData\Local\Programs\Notion\Notion.exe")
 ^!f:: callSoft("ahk_exe Fluent Reader.exe", "Fluent Reader.exe", "D:\Fluent Reader\Fluent Reader.exe")
 ;^!f::keyfunc_listary()
