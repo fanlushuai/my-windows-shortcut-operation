@@ -121,8 +121,8 @@ capslock & j::^+j
 
 
   Run A_ComSpec ' /c   ""D:\Microsoft VS Code\Code.exe"  " E:\code\blog"" ', , "Hide"
-  WinWait "C:\WINDOWS\system32\cmd.exe"
-  Send "{Enter}"
+  ; WinWait "C:\WINDOWS\system32\cmd.exe"
+  ; Send "{Enter}"
   ;  Send "^d"
   ;  Run 'C:\Windows\system32\cmd.exe' . ' /c   "ping baidu.com" '
 }
