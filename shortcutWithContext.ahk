@@ -43,6 +43,17 @@ Esc:: Send "{Esc 3}" ;
 ~Esc:: Send "{Esc 2}" ; 两次Esc，从地址栏回到页面选中
 
 #HotIf
+
+; https://www.autohotkey.com/boards/viewtopic.php?style=19&t=123198
+#HotIf WinActive("ahk_class XamlExplorerHostIslandWindow")
+*j:: Send("{Alt Down}{Down}")
+*k:: Send "{Alt Down}{Up}"
+*h:: Send "{Alt Down}{Left}"
+*l:: Send "{Alt Down}{Right}"
+~*Alt Up:: Send("{Enter}")
+#HotIf
+
+
 ; #IfWinActive ahk_exe chrome.exe ; 配合地址栏，和搜索栏，以及surfingkeys。使用ctrl+n 和p 来切换下拉菜单
 
 ;     ^n::yyy()
