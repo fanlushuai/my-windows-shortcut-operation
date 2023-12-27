@@ -13,7 +13,8 @@ callSoft(winUnique, proc, executablePath) {
             ; WinMinimize ; Use the window found by WinExist. sometimes occur a bug windows active but also min
             SendInput "!{Esc}" ; open last active . but if last is not exist???? haha ,maybe wont occur
         } else {
-            WinActivate ; Use the window found by WinExist.
+            WinActivate winUnique ; Use the window found by WinExist.
+            WinWaitActive winUnique
         }
 
         ; Click ;
@@ -27,6 +28,7 @@ callSoft(winUnique, proc, executablePath) {
         Run executablePath ; win not exist 的情况不知道怎么回事。程序已经运行了。只是窗口没有。只能先通过这种方式，调出主窗口了。但是这存在一个问题，可能会调出来两次。
         WinWait winUnique
         WinActivate winUnique ; Use the window found by WinExist.
+        WinWaitActive winUnique
     }
 }
 
