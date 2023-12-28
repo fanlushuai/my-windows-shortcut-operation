@@ -144,21 +144,22 @@ capslock & j::^+j
 ~^LButton:: {
 
   ; 记录光标初始位置：
-  x := 0
-  y := 0
-  MouseGetPos &x, &y, &storeWindowId, &control
+  clickDownPosX := 0
+  clickDownPosY := 0
+  MouseGetPos &clickDownPosX, &clickDownPosY, &winId, &control
 
-  ; 等待左键弹起。超时时间30s
+  ; 等待左键弹起。超时时间 s
   if KeyWait("LButton", "T10") {
 
     ; 判断光标位置是否变化
-    a := 0
-    b := 0
-    MouseGetPos &a, &b, &storeWindowId, &control
+    clickUpPosX := 0
+    clickUpPosY := 0
+    MouseGetPos &clickUpPosX, &clickUpPosY, &winId, &control
 
-    changed := !(a == x && y == b)
+    ; 坐标没有变化，范围是空的。
+    range0 := (clickDownPosX == clickUpPosX && clickDownPosY == clickUpPosY)
 
-    if (changed) {
+    if (!range0) {
       Send "^c"
     } else {
       Send "^v"
