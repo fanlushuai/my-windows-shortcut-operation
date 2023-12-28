@@ -139,3 +139,11 @@ capslock & j::^+j
 
 ; ================== ctrl+ num 系列
 ^1:: Run "https://simpread.pro/@fanlushuai"
+
+; 快速复制
+~^LButton:: {
+    ; 等待左键弹起。超时时间30s
+    if KeyWait("LButton", "T30") {
+        Send "^c"
+    }
+}
