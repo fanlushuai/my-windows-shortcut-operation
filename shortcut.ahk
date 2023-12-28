@@ -140,10 +140,28 @@ capslock & j::^+j
 ; ================== ctrl+ num 系列
 ^1:: Run "https://simpread.pro/@fanlushuai"
 
-; 快速复制
+; 快速复制粘贴。ctrl+左键。选中文本在弹起，就会复制。不选中，就会粘贴
 ~^LButton:: {
-    ; 等待左键弹起。超时时间30s
-    if KeyWait("LButton", "T10") {
-        Send "^c"
+
+  ; 记录光标初始位置：
+  x := 0
+  y := 0
+  MouseGetPos &x, &y, &storeWindowId, &control
+
+  ; 等待左键弹起。超时时间30s
+  if KeyWait("LButton", "T10") {
+
+    ; 判断光标位置是否变化
+    a := 0
+    b := 0
+    MouseGetPos &a, &b, &storeWindowId, &control
+
+    changed := !(a == x && y == b)
+
+    if (changed) {
+      Send "^c"
+    } else {
+      Send "^v"
     }
+  }
 }
