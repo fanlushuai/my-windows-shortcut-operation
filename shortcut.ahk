@@ -143,7 +143,7 @@ capslock & j::^+j
 ; 快速复制
 ~^LButton:: {
     ; 等待左键弹起。超时时间30s
-    if KeyWait("LButton", "T30") {
+    if KeyWait("LButton", "T10") {
         Send "^c"
     }
 }
