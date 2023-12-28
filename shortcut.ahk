@@ -140,29 +140,63 @@ capslock & j::^+j
 ; ================== ctrl+ num 系列
 ^1:: Run "https://simpread.pro/@fanlushuai"
 
-; 快速复制粘贴。ctrl+左键。选中文本在弹起，就会复制。不选中，就会粘贴
-~^LButton:: {
+; ; 快速复制粘贴。ctrl+左键。选中文本在弹起，就会复制。不选中，就会粘贴
+; ~^LButton:: {
+
+;   ; 记录光标初始位置：
+;   clickDownPosX := 0
+;   clickDownPosY := 0
+;   MouseGetPos &clickDownPosX, &clickDownPosY, &winId, &control
+
+;   ; 等待左键弹起。超时时间 s
+;   if KeyWait("LButton", "T10") {
+
+;     ; 判断光标位置是否变化
+;     clickUpPosX := 0
+;     clickUpPosY := 0
+;     MouseGetPos &clickUpPosX, &clickUpPosY, &winId, &control
+
+;     ; 坐标没有变化，范围是空的。
+;     range0 := (clickDownPosX == clickUpPosX && clickDownPosY == clickUpPosY)
+
+;     if (!range0) {
+;       Send "^c"
+;     } else {
+;       Send "^v"
+;     }
+;   }
+; }
+
+; 长按，复制粘贴。
+~LButton:: {
+  ; 长按时间，只有至少为这个时间，功能才会启动。单位秒
+  longPressMinTime := "1.0"
 
   ; 记录光标初始位置：
   clickDownPosX := 0
   clickDownPosY := 0
   MouseGetPos &clickDownPosX, &clickDownPosY, &winId, &control
 
-  ; 等待左键弹起。超时时间 s
-  if KeyWait("LButton", "T10") {
+  if KeyWait("LButton", "T" . longPressMinTime) {
 
-    ; 判断光标位置是否变化
-    clickUpPosX := 0
-    clickUpPosY := 0
-    MouseGetPos &clickUpPosX, &clickUpPosY, &winId, &control
+  } else {
+    ; 超时处理
+    ; 等待左键弹起。超时时间 s
+    if KeyWait("LButton", "T10") {
 
-    ; 坐标没有变化，范围是空的。
-    range0 := (clickDownPosX == clickUpPosX && clickDownPosY == clickUpPosY)
+      ; 判断光标位置是否变化
+      clickUpPosX := 0
+      clickUpPosY := 0
+      MouseGetPos &clickUpPosX, &clickUpPosY, &winId, &control
 
-    if (!range0) {
-      Send "^c"
-    } else {
-      Send "^v"
+      ; 坐标没有变化，范围是空的。
+      range0 := (clickDownPosX == clickUpPosX && clickDownPosY == clickUpPosY)
+
+      if (!range0) {
+        Send "^c"
+      } else {
+        Send "^v"
+      }
     }
   }
 }
