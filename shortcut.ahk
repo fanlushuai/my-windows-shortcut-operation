@@ -194,8 +194,12 @@ capslock & j::^+j
 
       if (!range0) {
         Send "^c"
+        ToolTip "已复制"
+        SetTimer () => ToolTip(), -1000
       } else {
         Send "^v"
+        ToolTip "已粘贴"
+        SetTimer () => ToolTip(), -1000
       }
     }
   }
