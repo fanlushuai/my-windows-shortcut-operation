@@ -14,15 +14,19 @@ if not (A_IsAdmin or RegExMatch(full_command_line, " /restart(?!\S)"))
     ExitApp
 }
 
+cmd(cmdStr) {
+    Run A_ComSpec ' /c' cmdStr, , 'Hide'
+}
 
 setTimeTo9_8_0() {
-    Run A_ComSpec ' /c date 2024-09-08 && time 00:00:00.00', , 'Hide'
-    OutputDebug "setTimeTo980"
+    cmd 'date 2024-09-08 && time 00:00:00.00'
 }
 
 setTimeToBeijingTime() {
-    Run A_ComSpec ' /c net start w32time', , 'Hide'
-    Run A_ComSpec ' /c w32tm /resync', , 'Hide'
+    cmd 'net start w32time'
+    Sleep 1000
+    cmd 'w32tm /resync'
+
     OutputDebug "setTimeToBeijingTime"
 }
 

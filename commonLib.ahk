@@ -12,3 +12,7 @@ clickIfImageInWindow(imagePath, windowUniqueFlag) {
     }
     return false
 }
+
+cmd(cmdStr) {
+    Run A_ComSpec ' /c' cmdStr, , 'Hide'
+}
