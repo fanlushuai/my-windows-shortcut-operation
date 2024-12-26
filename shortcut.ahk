@@ -166,3 +166,6 @@ capslock & j::^+j
 ;     }
 ;   }
 ; }
+
+; 启动quick面板
+RCtrl:: Send "^!#o"
