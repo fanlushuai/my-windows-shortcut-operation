@@ -44,21 +44,21 @@ SetCapsLockState "AlwaysOff"
 
 ; 切换到上一个桌面。当使用两个虚拟桌面的时候，只需要循环按住就可以了。
 ; 因为lastopen不能保证在初始化的时候，进行loop。所以，需要next的方式。
-CapsLock & f:: {
-  if GetKeyState("Alt", "P") {
-    ; MoveCurrentWindowToLastOpened()
-    OutputDebug "MoveCurrentWindowToNext"
-    MoveCurrentWindowToNext()
-  } else {
-    ; switchDesktopToLastOpened()
-    OutputDebug "switchDesktopToNext"
-    switchDesktopToNext()
-  }
-}
+; CapsLock & f:: {
+;   if GetKeyState("Alt", "P") {
+;     ; MoveCurrentWindowToLastOpened()
+;     OutputDebug "MoveCurrentWindowToNext"
+;     MoveCurrentWindowToNext()
+;   } else {
+;     ; switchDesktopToLastOpened()
+;     OutputDebug "switchDesktopToNext"
+;     switchDesktopToNext()
+;   }
+; }
 
 
 ; 切换当前窗口到另外一个显示器
-CapsLock & v::+#Left
+; CapsLock & v::+#Left
 
 ; 锁定应用，或者锁定窗口
 ; pin app on top, app ,window
@@ -67,17 +67,17 @@ capslock & t:: OnTogglePinOnTopPress()
 ; capslock & w::OnTogglePinWindowPress()
 
 ; 增加一组快捷键，绕过capslock。使得strokesPlus手势来发送按键，进而支持动作
-!#j:: MoveCurrentWindowToDesktop(1)
-!#k:: MoveCurrentWindowToDesktop(2)
+; !#j:: MoveCurrentWindowToDesktop(1)
+; !#k:: MoveCurrentWindowToDesktop(2)
 
 ;//todo 使用fn按键，来切换数字键的状态。数字键，或者是fn数字键。
 
 ; ================  ctrl win 系列
 ; Vim-like key config . If use this, suggest config DesktopMiniCount=4, DesktopInitSwitchTarget as well
-^#j:: switchDesktopByNumber(1)  ;上 桌面
-^#k:: switchDesktopByNumber(2)  ;下 桌面
-^#l:: switchDesktopByNumber(3)
-^#i:: switchDesktopByNumber(4)
+; ^#j:: switchDesktopByNumber(1)  ;上 桌面
+; ^#k:: switchDesktopByNumber(2)  ;下 桌面
+; ^#l:: switchDesktopByNumber(3)
+; ^#i:: switchDesktopByNumber(4)
 
 ^#d::Volume_Down
 ^#u::Volume_Up
@@ -106,7 +106,8 @@ capslock & j::^+j
 ^!e:: {
   ;  Run A_ComSpec  ' /c   ""D:\Microsoft VS Code\Code.exe"  " E:\code\blog"" '
   winUnique := "blog"
-  If WinExist(winUnique)
+  If WinExist(winUnique,,"- Google Chrome")
+  ; If WinGetClass(winUnique)
   {
     if WinActive(winUnique) {
       ; WinMinimize ; Use the window found by WinExist. sometimes occur a bug windows active but also min
