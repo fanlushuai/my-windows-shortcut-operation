@@ -127,7 +127,7 @@ capslock & j::^+j
   ;  Send "^d"
   ;  Run 'C:\Windows\system32\cmd.exe' . ' /c   "ping baidu.com" '
 }
-^!r:: callSoft("ahk_exe Notion.exe", "Notion.exe", "C:\Users\A\AppData\Local\Programs\Notion\Notion.exe")
+^!r:: callSoft("ahk_exe WindowsTerminal.exe", "WindowsTerminal.exe", "E:\download\Microsoft.WindowsTerminalPreview_1.18.1462.0_x64\terminal-1.18.1462.0\WindowsTerminal.exe")
 ; ^!f:: callSoft("ahk_exe Fluent Reader.exe", "Fluent Reader.exe", "D:\Fluent Reader\Fluent Reader.exe")
 ^!f:: callSoft("ahk_exe chrome.exe", "chrome.exe", "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
 ;^!f::keyfunc_listary()
