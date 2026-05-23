@@ -99,8 +99,18 @@ capslock & j::^+j
 ; special handling: websearch use two step active and send words for control
 ; Attention: Before using , please replace user path exe for run correctlly！！！！！
 
-^!w:: callSoft("ahk_exe Weixin.exe", "Weixin.exe"
-  , "C:\Program Files (x86)\Tencent\Weixin\Weixin.exe")
+; ^!w:: callSoft("ahk_exe Weixin.exe", "Weixin.exe"
+;  , "C:\Program Files (x86)\Tencent\Weixin\Weixin.exe")
+
+^!w:: {
+  if (PID := ProcessExist("Weixin.exe")) {
+    ; 配置微信的窗口快捷键为alt+w
+    Send("!w")  
+  } else {
+    Run "C:\Program Files\Tencent\Weixin\Weixin.exe"
+  }
+}
+
 ;^!q::callSoft("ahk_class Chrome_WidgetWin_1","uTools.exe","C:\Users\A\AppData\Local\Programs\utools\uTools.exe")
 ; ^!e:: callSoft("ahk_exe Code.exe", "Code.exe", "D:\Microsoft VS Code\Code.exe")
 ^!e:: {
