@@ -6,6 +6,31 @@
 ; https://www.autohotkey.com/board/topic/51215-completely-disable-capslock/
 SetCapsLockState "AlwaysOff"
 
+; 68配列的键盘，需要这种优化。
+; ========== 1. CapsLock+数字行 = F1~F12 ==========
+; ========== 2. CapsLock + UIOLJK 方向键（68键最实用布局）==========
+; ========== 3. CapsLock + ; ' [ ] 补齐编辑键 Home/End/PgDn/Ins ==========
+capslock & 1::F1
+capslock & 2::F2
+capslock & 3::F3
+capslock & 4::F4
+capslock & 5::F5
+capslock & 6::F6
+capslock & 7::F7
+capslock & 8::F8
+capslock & 9::F9
+capslock & 0::F10
+capslock & -::F11
+capslock & =::F12
+; 使用surfingkeys的配置
+capslock & j::Down
+capslock & k::Up
+capslock & h::Left
+capslock & l::Right
+
+capslock & `;::Home
+capslock & '::End
+
 ; 切换桌面  && 切换当前窗口到另外一个虚拟桌面
 ; 编写在一起原因，无法3个组合按键，只能采用检测状态的方式
 ; CapsLock & s::
