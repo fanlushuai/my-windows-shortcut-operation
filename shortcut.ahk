@@ -85,6 +85,45 @@ capslock & '::End
 ; 切换当前窗口到另外一个显示器
 ; CapsLock & v::+#Left
 
+
+; ========== 右Shift两用Fn（可选保留Shift功能）==========
+
+global RSHIFT_FN := false
+; ~$RShift:: {
+$RShift:: {
+    global RSHIFT_FN := true
+    KeyWait("RShift")
+    RSHIFT_FN := false
+}
+
+; F1-F12分发函数
+$1::SendF(1)
+$2::SendF(2)
+$3::SendF(3)
+$4::SendF(4)
+$5::SendF(5)
+$6::SendF(6)
+$7::SendF(7)
+$8::SendF(8)
+$9::SendF(9)
+$0::SendF(10)
+$-::SendF(11)
+$=::SendF(12)
+
+SendF(n) {
+    global RSHIFT_FN
+    ; CapsLock 或 右Shift按住都触发F功能
+    if (RSHIFT_FN) {
+        Send "{ F" n "}"
+        return
+    }
+    switch n {
+        case 11: Send "-"
+        case 12: Send "="
+        default: Send n
+    }
+}
+
 ; 锁定应用，或者锁定窗口
 ; pin app on top, app ,window
 capslock & t:: OnTogglePinOnTopPress()
