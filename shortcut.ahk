@@ -118,6 +118,7 @@ SendF(n) {
         return
     }
     switch n {
+        case 10: Send 0 
         case 11: Send "-"
         case 12: Send "="
         default: Send n
