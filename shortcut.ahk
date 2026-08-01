@@ -4,7 +4,23 @@
 
 ; CapsLock 重新映射，防止误触发，导致输入法的切换，直接禁用。并增加难度触发实际输入法大小切换。
 ; https://www.autohotkey.com/board/topic/51215-completely-disable-capslock/
+
+; 禁用capslock，不是很管用。偶尔存在问题。所以，加上后面的定时轮训来修改。保证稳定性。
+; 系统强制锁定大写永久关闭
 SetCapsLockState "AlwaysOff"
+; 捕获Caps全部按压事件，阻断系统原生大写切换，保留按键信号给AHK热键使用
+$*CapsLock:: {
+  KeyWait("CapsLock") ; 等待手指松开，杜绝down状态残留粘连
+  return
+}
+; 定时兜底清理卡死的Caps按下状态，彻底解决粘连
+upCapslockIfP() {
+  if (GetKeyState("CapsLock", "P")) {
+    Send("{Blind}{CapsLock Up}")
+  }
+}
+SetTimer(() => upCapslockIfP(), 200)
+
 
 ; 68配列的键盘，需要这种优化。
 ; ========== 1. CapsLock+数字行 = F1~F12 ==========
