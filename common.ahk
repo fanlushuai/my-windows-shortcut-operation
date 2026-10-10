@@ -57,13 +57,7 @@ ToEnglishWithSoug() {
 }
 
 CloseChrome() {
-    SetTitleMatchMode 2
-    WinClose "Google Chrome"
-    WinClose "Google Chrome"
-    WinClose "Google Chrome"
-    WinClose "Google Chrome"
-    WinClose "Google Chrome"
-    WinClose "Google Chrome"
+    WinClose "ahk_exe chrome.exe"
 }
 
 
