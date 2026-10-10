@@ -22,4 +22,6 @@ setTimeToBeijingTime()
 }
 #HotIf
 
-#c:: CloseChrome()
+#c:: {
+    CloseChrome()
+}
