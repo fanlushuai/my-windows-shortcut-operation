@@ -57,6 +57,14 @@ capslock & l::Right
 capslock & `;::Home
 capslock & '::End
 
+
+; 针对微信，两个窗口来回切换（最常用的来回切）用来，切换定位微信聊天输入框中的光标。
+CapsLock & i:: {
+    Send "!{Tab}"
+    Sleep 100
+    Send "!{Tab}"
+}
+
 ; 切换桌面  && 切换当前窗口到另外一个虚拟桌面
 ; 编写在一起原因，无法3个组合按键，只能采用检测状态的方式
 ; CapsLock & s::
