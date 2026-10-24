@@ -17,6 +17,20 @@ CapsLock:: {
   return
 }
 
+; CapsLock::Return 拦截了单独按 CapsLock 的情况，但对于 CapsLock 组合键（如 CapsLock & h、CapsLock & j 等），虽然 AHK 消费了这些热键，但 CapsLock 的物理状态有时没有被正确释放，导致后续输入被当作大写。
+; ; 在 boot.ahk 第5行
+; ; 原来: SendMode "Input"
+; ; 改为:
+; SendMode "InputThenPlay"
+
+; ; 在 shortcut.ahk 末尾添加
+; ; 修复 CapsLock 有时"卡住"的问题 - 确保每次 CapsLock 组合键后释放 CapsLockff
+~*CapsLock Up:: {
+    if (GetKeyState("CapsLock", "P")) {
+        Send "{CapsLock Up}"
+    }
+}
+
 
 ; 68配列的键盘，需要这种优化。
 ; ========== 1. CapsLock+数字行 = F1~F12 ==========
